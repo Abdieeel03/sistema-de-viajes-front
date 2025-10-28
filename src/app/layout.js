@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="bg-light text-dark">
         <Navbar />
-        <main className="container py-4">{children}</main>
+        <main className="min-vh-100">{children}</main>
       </body>
     </html>
   );
