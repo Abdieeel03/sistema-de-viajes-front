@@ -25,12 +25,16 @@ export default function LoginPage() {
         return;
       }
 
+      // Guardar usuario (esto disparará el evento de cambio de auth)
       saveUser(data);
-      router.push("/");
+
+      // Redirigir después de un pequeño delay para asegurar que el estado se actualice
+      setTimeout(() => {
+        router.push("/");
+      }, 100);
     } catch (err) {
       console.error(err);
       setError("Error de conexión con el servidor");
-    } finally {
       setLoading(false);
     }
   };
@@ -44,33 +48,15 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label">Correo electrónico</label>
-            <input
-              type="email"
-              className="form-control"
-              placeholder="tuemail@ejemplo.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <input type="email" className="form-control" placeholder="tuemail@ejemplo.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
 
           <div className="mb-3">
             <label className="form-label">Contraseña</label>
-            <input
-              type="password"
-              className="form-control"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <input type="password" className="form-control" placeholder="********" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary w-100"
-            disabled={loading}
-          >
+          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
             {loading ? "Ingresando..." : "Iniciar Sesión"}
           </button>
         </form>

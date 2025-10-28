@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getUser, logout, isAdmin } from "../utils/auth";
+import { getUser, logout, isAdmin, onAuthChange } from "../utils/auth";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
@@ -9,10 +9,19 @@ export default function Navbar() {
   const router = useRouter();
 
   useEffect(() => {
-    const user = getUser();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setUsuario(user);
-    console.log(user)
+    // Función para actualizar el usuario
+    const updateUser = () => {
+      setUsuario(getUser());
+    };
+
+    // Cargar usuario inicial en el cliente
+    updateUser();
+
+    // Suscribirse a cambios en la autenticación
+    const unsubscribe = onAuthChange(updateUser);
+
+    // Limpiar suscripción al desmontar
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = () => {
@@ -28,15 +37,7 @@ export default function Navbar() {
           TravelGo
         </Link>
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
 
@@ -87,10 +88,7 @@ export default function Navbar() {
                   </span>
                 </li>
                 <li className="nav-item">
-                  <button
-                    className="btn btn-outline-danger btn-sm"
-                    onClick={handleLogout}
-                  >
+                  <button className="btn btn-outline-danger btn-sm" onClick={handleLogout}>
                     Cerrar sesión
                   </button>
                 </li>

@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 
 export default function RootLayout({ children }) {
-  // Asegura que Bootstrap JS se cargue correctamente en el cliente
   useEffect(() => {
     require("bootstrap/dist/js/bootstrap.bundle.min.js");
   }, []);
