@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../app/globals.css";
 import { useEffect } from "react";
 import Navbar from "../components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function RootLayout({ children }) {
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
       <body className="bg-light text-dark">
         <Navbar />
         <main className="min-vh-100">{children}</main>
+        <Footer />
       </body>
     </html>
   );

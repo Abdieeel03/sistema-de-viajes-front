@@ -113,8 +113,6 @@ export default function Home() {
         </div>
       </div>
 
-      <Footer />
-
       <style jsx>{`
         .hover-card {
           transition: transform 0.3s ease, box-shadow 0.3s ease;
