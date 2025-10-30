@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getUser, logout, isAdmin, onAuthChange } from "../utils/auth";
+import { getUser, logout, onAuthChange } from "../utils/auth";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
@@ -57,7 +57,7 @@ export default function Navbar() {
               </li>
             )}
 
-            {isAdmin() && (
+            {usuario && usuario.rol === "admin" && (
               <li className="nav-item">
                 <Link href="/admin" className="nav-link text-danger fw-semibold">
                   Panel Admin

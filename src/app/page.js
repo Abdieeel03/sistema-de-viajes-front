@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import Footer from "../components/Footer";
+import DestinoCard from "../components/DestinoCard";
 import { obtenerDestinos } from "@/services/apiDestinos";
 import { useEffect, useState } from "react";
 
@@ -77,64 +78,10 @@ export default function Home() {
 
         <div className="row g-4">
           {destinos.map((destino) => (
-            <div key={destino._id} className="col-12 col-sm-6 col-lg-3">
-              <div className="card h-100 border-0 shadow-sm hover-card">
-                <div
-                  className="card-img-top"
-                  style={{
-                    height: "200px",
-                    backgroundImage: `url("${destino.imagen || "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop"}")`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                ></div>
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title fw-bold">
-                    {destino.nombre}, {destino.pais}
-                  </h5>
-                  <p className="card-text text-secondary small mb-1">
-                    <strong>Tipo:</strong> {destino.tipo}
-                  </p>
-                  {destino.duracion && (
-                    <p className="card-text text-secondary small mb-1">
-                      <strong>Duración:</strong> {destino.duracion}
-                    </p>
-                  )}
-                  <p className="card-text text-secondary small mb-3">
-                    Desde <span className="fw-bold text-primary fs-5">${destino.precio}</span>
-                  </p>
-                  <Link href="/destinos" className="btn btn-outline-primary btn-sm mt-auto">
-                    Ver más
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <DestinoCard key={destino._id} destino={destino} />
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        .hover-card {
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .hover-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
-        }
-        .hero-banner {
-          animation: fadeIn 0.8s ease-in;
-        }
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </>
   );
 }

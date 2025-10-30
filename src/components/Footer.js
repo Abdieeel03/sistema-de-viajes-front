@@ -84,13 +84,6 @@ export default function Footer() {
           <p className="text-secondary small mb-0">© {new Date().getFullYear()} TravelGo. Todos los derechos reservados.</p>
         </div>
       </div>
-
-      <style jsx>{`
-        .hover-primary:hover {
-          color: #0d6efd !important;
-          transition: color 0.3s ease;
-        }
-      `}</style>
     </footer>
   );
 }
