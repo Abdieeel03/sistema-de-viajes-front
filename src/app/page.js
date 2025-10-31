@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Footer from "../components/Footer";
 import DestinoCard from "../components/DestinoCard";
+import ReservaForm from "../components/ReservaForm";
 import { obtenerDestinos } from "@/services/apiDestinos";
 import { useEffect, useState } from "react";
 
@@ -9,6 +10,10 @@ export default function Home() {
   const [destinos, setDestinos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Modal de reserva
+  const [destinoSeleccionado, setDestinoSeleccionado] = useState(null);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   useEffect(() => {
     const cargarDestinos = async () => {
@@ -27,6 +32,21 @@ export default function Home() {
 
     cargarDestinos();
   }, []);
+
+  const handleReservar = (destino) => {
+    setDestinoSeleccionado(destino);
+    setMostrarModal(true);
+  };
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+    setDestinoSeleccionado(null);
+  };
+
+  const handleReservaExitosa = () => {
+    alert("✅ ¡Reserva creada exitosamente!\n\nPuedes ver tus reservas en 'Mis Viajes'");
+    handleCerrarModal();
+  };
 
   return (
     <>
@@ -78,10 +98,13 @@ export default function Home() {
 
         <div className="row g-4">
           {destinos.map((destino) => (
-            <DestinoCard key={destino._id} destino={destino} />
+            <DestinoCard key={destino._id} destino={destino} onReservar={handleReservar} />
           ))}
         </div>
       </div>
+
+      {/* Modal de reserva */}
+      {mostrarModal && destinoSeleccionado && <ReservaForm destino={destinoSeleccionado} onClose={handleCerrarModal} onSuccess={handleReservaExitosa} />}
     </>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
-import Link from "next/link";
 
-export default function DestinoCard({ destino }) {
+export default function DestinoCard({ destino, onReservar }) {
   return (
     <div className="col-12 col-sm-6 col-lg-3">
       <div className="card h-100 border-0 shadow-sm hover-card">
@@ -23,15 +22,29 @@ export default function DestinoCard({ destino }) {
           </p>
           {destino.duracion && (
             <p className="card-text text-secondary small mb-1">
-              <strong>Duración:</strong> {destino.duracion}
+              <strong>Duración:</strong> {destino.duracion} días
+            </p>
+          )}
+          {destino.descripcion && (
+            <p
+              className="card-text text-secondary small mb-2"
+              style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+              }}
+            >
+              {destino.descripcion}
             </p>
           )}
           <p className="card-text text-secondary small mb-3">
             Desde <span className="fw-bold text-primary fs-5">${destino.precio}</span>
           </p>
-          <Link href="/destinos" className="btn btn-outline-primary btn-sm mt-auto">
-            Ver más
-          </Link>
+          <button className="btn btn-primary btn-sm mt-auto" onClick={() => onReservar && onReservar(destino)}>
+            🎫 Reservar ahora
+          </button>
         </div>
       </div>
     </div>
