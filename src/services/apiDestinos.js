@@ -27,3 +27,19 @@ export async function crearDestino(data) {
   if (!res.ok) throw new Error(body.message || "Error creando destino");
   return body;
 }
+
+/**
+ * Eliminar un destino (solo admin).
+ * @param {string} destinoId - ID del destino a eliminar
+ * @param {string} userId - ID del usuario admin
+ * @returns {Object} respuesta del servidor
+ */
+export async function eliminarDestino(destinoId, userId) {
+  const res = await fetch(`${API_URL}/destinos/${destinoId}?userId=${userId}`, {
+    method: "DELETE",
+  });
+
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.message || "Error eliminando destino");
+  return body;
+}
