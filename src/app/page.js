@@ -1,6 +1,4 @@
 "use client";
-import Link from "next/link";
-import Footer from "../components/Footer";
 import DestinoCard from "../components/DestinoCard";
 import ReservaForm from "../components/ReservaForm";
 import { obtenerDestinos } from "@/services/apiDestinos";

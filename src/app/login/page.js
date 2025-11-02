@@ -18,23 +18,13 @@ export default function LoginPage() {
 
     try {
       const data = await loginUsuario({ email, password });
-
-      if (!data || data.error) {
-        setError(data.error || "Credenciales inválidas");
-        setLoading(false);
-        return;
-      }
-
-      // Guardar usuario (esto disparará el evento de cambio de auth)
       saveUser(data);
-
-      // Redirigir después de un pequeño delay para asegurar que el estado se actualice
       setTimeout(() => {
         router.push("/");
       }, 100);
-    } catch (err) {
-      console.error(err);
-      setError("Error de conexión con el servidor");
+    } catch (data) {
+      console.error(data);
+      setError(data.message || "Error al iniciar sesión");
       setLoading(false);
     }
   };

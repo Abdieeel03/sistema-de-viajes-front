@@ -29,16 +29,11 @@ export default function RegistroPage() {
 
     try {
       const data = await registerUsuario(formData);
-
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setSuccess("Cuenta creada con éxito. Redirigiendo...");
-        setTimeout(() => router.push("/login"), 2000);
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Error de conexión con el servidor");
+      setSuccess("Cuenta creada con éxito. Redirigiendo...");
+      setTimeout(() => router.push("/login"), 1000);
+    } catch (data) {
+      console.error(data.message);
+      setError(data.message);
     } finally {
       setLoading(false);
     }
@@ -55,48 +50,20 @@ export default function RegistroPage() {
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label">Nombre completo</label>
-            <input
-              type="text"
-              className="form-control"
-              name="nombre"
-              placeholder="Juan Pérez"
-              value={formData.nombre}
-              onChange={handleChange}
-              required
-            />
+            <input type="text" className="form-control" name="nombre" placeholder="Juan Pérez" value={formData.nombre} onChange={handleChange} required />
           </div>
 
           <div className="mb-3">
             <label className="form-label">Correo electrónico</label>
-            <input
-              type="email"
-              className="form-control"
-              name="email"
-              placeholder="usuario@ejemplo.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+            <input type="email" className="form-control" name="email" placeholder="usuario@ejemplo.com" value={formData.email} onChange={handleChange} required />
           </div>
 
           <div className="mb-3">
             <label className="form-label">Contraseña</label>
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              placeholder="********"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <input type="password" className="form-control" name="password" placeholder="********" value={formData.password} onChange={handleChange} required />
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary w-100"
-            disabled={loading}
-          >
+          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
             {loading ? "Creando cuenta..." : "Registrarse"}
           </button>
         </form>
