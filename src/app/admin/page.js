@@ -39,6 +39,7 @@ export default function AdminPage() {
   const [loadingReservas, setLoadingReservas] = useState(false);
   const [emailBusqueda, setEmailBusqueda] = useState("");
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
+  const [busquedaRealizada, setBusquedaRealizada] = useState(false);
 
   // Verificar autenticación y rol admin
   useEffect(() => {
@@ -61,12 +62,15 @@ export default function AdminPage() {
     }
   }, [usuario, activeTab]);
 
-  // Cargar reservas
+  // No cargar reservas automáticamente
   useEffect(() => {
-    if (usuario && activeTab === "reservas") {
-      cargarReservas();
+    // Resetear la búsqueda al cambiar de tab
+    if (activeTab === "reservas") {
+      setBusquedaRealizada(false);
+      setEmailBusqueda("");
+      setReservasFiltradas([]);
     }
-  }, [usuario, activeTab]);
+  }, [activeTab]);
 
   const cargarDestinos = async () => {
     try {
@@ -85,9 +89,10 @@ export default function AdminPage() {
       setLoadingReservas(true);
       const data = await obtenerReservas();
       setReservas(data);
-      setReservasFiltradas(data);
+      return data;
     } catch (err) {
       console.error("Error cargando reservas:", err);
+      return [];
     } finally {
       setLoadingReservas(false);
     }
@@ -209,14 +214,22 @@ export default function AdminPage() {
     }
   };
 
-  const handleBuscarReservas = () => {
+  const handleBuscarReservas = async () => {
     if (!emailBusqueda.trim()) {
-      setReservasFiltradas(reservas);
+      alert("Por favor ingresa un email para buscar");
       return;
     }
 
-    const filtradas = reservas.filter((reserva) => reserva.idUsuario.email.toLowerCase().includes(emailBusqueda.toLowerCase()));
+    setBusquedaRealizada(true);
+    const todasReservas = await cargarReservas();
+    const filtradas = todasReservas.filter((reserva) => reserva.idUsuario.email.toLowerCase().includes(emailBusqueda.toLowerCase()));
     setReservasFiltradas(filtradas);
+  };
+
+  const handleLimpiarBusqueda = () => {
+    setEmailBusqueda("");
+    setReservasFiltradas([]);
+    setBusquedaRealizada(false);
   };
 
   const handleCambiarEstado = async (reservaId, nuevoEstado) => {
@@ -229,10 +242,11 @@ export default function AdminPage() {
 
       if (!res.ok) throw new Error("Error al actualizar estado");
 
-      // Recargar reservas
-      await cargarReservas();
+      // Recargar y aplicar filtro de búsqueda
+      const todasReservas = await cargarReservas();
       if (emailBusqueda.trim()) {
-        handleBuscarReservas();
+        const filtradas = todasReservas.filter((reserva) => reserva.idUsuario.email.toLowerCase().includes(emailBusqueda.toLowerCase()));
+        setReservasFiltradas(filtradas);
       }
     } catch (err) {
       console.error("Error cambiando estado:", err);
@@ -460,23 +474,28 @@ export default function AdminPage() {
               <h3 className="h5 mb-3">🔍 Buscar Reservas por Email</h3>
               <div className="row g-2">
                 <div className="col-md-9">
-                  <input type="email" className="form-control" placeholder="Ingresa el email del usuario..." value={emailBusqueda} onChange={(e) => setEmailBusqueda(e.target.value)} />
+                  <input
+                    type="email"
+                    className="form-control"
+                    placeholder="Ingresa el email del usuario..."
+                    value={emailBusqueda}
+                    onChange={(e) => setEmailBusqueda(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleBuscarReservas();
+                      }
+                    }}
+                  />
                 </div>
                 <div className="col-md-3">
-                  <button className="btn btn-primary w-100" onClick={handleBuscarReservas}>
-                    Buscar
+                  <button className="btn btn-primary w-100" onClick={handleBuscarReservas} disabled={loadingReservas}>
+                    {loadingReservas ? "Buscando..." : "Buscar"}
                   </button>
                 </div>
               </div>
-              {emailBusqueda && (
-                <button
-                  className="btn btn-link text-decoration-none mt-2 p-0"
-                  onClick={() => {
-                    setEmailBusqueda("");
-                    setReservasFiltradas(reservas);
-                  }}
-                >
-                  Limpiar filtro
+              {busquedaRealizada && (
+                <button className="btn btn-link text-decoration-none mt-2 p-0" onClick={handleLimpiarBusqueda}>
+                  🔄 Limpiar búsqueda
                 </button>
               )}
             </div>
@@ -505,10 +524,19 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {reservasFiltradas.length === 0 ? (
+                  {!busquedaRealizada ? (
+                    <tr>
+                      <td colSpan="8" className="text-center py-5">
+                        <div className="text-muted">
+                          <div style={{ fontSize: "3rem" }}>🔍</div>
+                          <p className="mb-0 mt-2">Ingresa un email y haz click en &quot;Buscar&quot; para ver las reservas</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : reservasFiltradas.length === 0 ? (
                     <tr>
                       <td colSpan="8" className="text-center py-4 text-muted">
-                        {emailBusqueda ? "No se encontraron reservas para este email" : "No hay reservas registradas"}
+                        No se encontraron reservas para el email: <strong>{emailBusqueda}</strong>
                       </td>
                     </tr>
                   ) : (
